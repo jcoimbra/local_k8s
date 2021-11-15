@@ -15,3 +15,12 @@ Clone this repo to your computer, change directory into the project and enter th
 ```shell
 $ vagrant up
 ```
+
+This will create a total of 3 virtual machines. One master and two workers. At the project root, a file with the name
+`config.conf` will be created. Use that file to configure `kubectl` to access the cluster as in:
+
+```shell
+$ kubectl --kubeconfig config.conf get nodes
+```
+
+For convenience, use an alias: `$ alias lk8s="kubectl --kubeconfig config.conf"`. 
