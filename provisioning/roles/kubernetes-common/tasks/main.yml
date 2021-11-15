@@ -1,0 +1,73 @@
+---
+- name: Disable SELinux
+  become: yes
+  selinux:
+    state: disabled
+
+- name: Disable swap (1/2)
+  become: yes
+  shell: swapoff -a
+
+- name: Disable swap (2/2)
+  become: yes
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*swap.*)$'
+    replace: '# \1'
+
+- name: Hosts file
+  become: yes
+  template:
+    src: hosts
+    dest: /etc/hosts
+
+- name: uninstall podman
+  become: yes
+  yum:
+    name:
+      - podman
+      - podman-docker
+    state: absent
+
+- name: Install kubernetes repo
+  become: yes
+  copy:
+    src: kubernetes.repo
+    dest: /etc/yum.repos.d/kubernetes.repo
+
+- name: Install docker repo
+  become: yes
+  copy:
+    src: docker.repo
+    dest: /etc/yum.repos.d/docker.repo
+
+- name: Install docker, kubectl, kubelet and kubeadm
+  become: yes
+  yum:
+    name:
+      - docker-ce
+      - kubectl-{{ kubeadm_version }}
+      - kubelet-{{ kubeadm_version }}
+      - kubeadm-{{ kubeadm_version }}
+
+- name: Configure docker cgroup driver (1/2)
+  become: yes
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Configure docker cgroup driver (2/2)
+  become: yes
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: Start and enable docker and kubelet
+  become: yes
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - docker
+    - kubelet

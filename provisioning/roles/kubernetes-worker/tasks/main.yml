@@ -1,0 +1,22 @@
+---
+- name: Get token
+  become: yes
+  delegate_to: master
+  shell: kubeadm token list | awk '{print $1}' | tail -1
+  register: token
+
+- name: Get discovery token ca cert hash
+  become: yes
+  delegate_to: master
+  shell: openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+  register: cert
+
+- name: Join cluster
+  become: yes
+  shell: kubeadm join --token {{ token.stdout }} {{ master_ip }}:6443 --discovery-token-ca-cert-hash sha256:{{ cert.stdout }}
+  ignore_errors: yes
+
+- name: Label worker nodes
+  become: yes
+  delegate_to: master
+  shell: kubectl label --overwrite node {{ inventory_hostname }} kubernetes.io/role=worker

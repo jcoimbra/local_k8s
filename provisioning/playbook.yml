@@ -1,0 +1,33 @@
+---
+- name: base
+  vars_files:
+    - vars.yml
+  hosts:
+    - all
+  roles:
+    - role: base
+
+- name: kubernetes-common
+  vars_files:
+    - vars.yml
+  hosts: 
+    - kubernetes-master
+    - kubernetes-worker
+  roles:
+    - role: kubernetes-common
+
+- name: kubernetes-master
+  vars_files:
+    - vars.yml
+  hosts:
+    - kubernetes-master
+  roles:
+    - role: kubernetes-master
+
+- name: kubernetes-worker
+  vars_files:
+    - vars.yml
+  hosts:
+    - kubernetes-worker
+  roles:
+    - role: kubernetes-worker

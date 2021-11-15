@@ -1,0 +1,22 @@
+---
+
+- name: copy private key
+  copy:
+    src: id_rsa
+    dest: /home/vagrant/.ssh/id_rsa
+    owner: vagrant
+    group: vagrant
+    mode: "0600"
+
+- name: copy private key
+  copy:
+    src: id_rsa.pub
+    dest: /home/vagrant/.ssh/id_rsa.pub
+    owner: vagrant
+    group: vagrant
+    mode: "0644"
+
+- name: Add public key to authorized_keys
+  ansible.posix.authorized_key:
+    user: vagrant
+    key: "{{ lookup('file', 'id_rsa.pub') }}"

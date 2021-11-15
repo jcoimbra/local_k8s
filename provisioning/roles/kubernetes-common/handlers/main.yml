@@ -1,0 +1,7 @@
+---
+- name: Restart docker
+  become: yes
+  service:
+    name: docker
+    state: restarted
+

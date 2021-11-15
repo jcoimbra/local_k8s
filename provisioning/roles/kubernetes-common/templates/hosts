@@ -1,0 +1,6 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+{{ master_ip }} master
+{% for item in groups['kubernetes-worker'] %}
+192.168.56.1{{ loop.index0 + 1 }} {{ item }}
+{% endfor %}

@@ -1,0 +1,5 @@
+kubeadm_version: 1.22.2
+node_subnet_portion: 192.168.56
+#master_ip: 192.168.10.10
+master_ip: "{{ node_subnet_portion }}.10"
+pod_network_cidr: 192.168.11.0/24
