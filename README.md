@@ -10,7 +10,7 @@ This project allows to quickly create a local kubernetes cluster.
 
 ## How to use
 
-Just clone this repo to you local computer and enter the following command:
+Clone this repo to your computer, change directory into the project and enter the following command:
 
 ```shell
 $ vagrant up
